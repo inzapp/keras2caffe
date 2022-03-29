@@ -6,9 +6,9 @@
     source ~/venv/bin/activate
     ```
 
-2. move mmdnn package to virtual env module path<br>
+2. link mmdnn package to virtual env module path<br>
     ```
-    mv ./mmdnn ~/venv/lib/python3.6/site-package/
+    ln -s $PWD/mmdnn ~/venv/lib/python3.6/site-packages/mmdnn
     ```
 
 3. install caffe cpu<br>
@@ -19,7 +19,7 @@
 4. link caffe to virtual env module path<br>
     ```
     ln -s /usr/lib/python3/dist-packages/caffe/ ~/venv/lib/python3.6/site-packages/caffe  # recommend this if possible
-    ln -s ./caffe ~/venv/lib/python3.6/site-packages/caffe  # alternative
+    ln -s $PWD/caffe ~/venv/lib/python3.6/site-packages/caffe  # alternative
     ```
 
 5. install tensorflow and scikit_image<br>
