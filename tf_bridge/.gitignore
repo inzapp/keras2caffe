@@ -1,0 +1,13 @@
+*.hdf5
+*.caffemodel
+*.prototxt
+*.pyc
+*.log
+*.solverstate
+*.bak
+*.h5
+*.caffemodel
+*.prototxt
+*.npy
+*.json
+*.pb
