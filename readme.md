@@ -18,7 +18,8 @@
 
 4. link caffe to virtual env module path<br>
     ```
-    ln -s /usr/lib/python3/dist-packages/caffe/ ~/venv/lib/python3.6/site-packages/caffe
+    ln -s /usr/lib/python3/dist-packages/caffe/ ~/venv/lib/python3.6/site-packages/caffe  # recommend this if possible
+    ln -s ./caffe ~/venv/lib/python3.6/site-packages/caffe  # alternative
     ```
 
 5. install tensorflow and scikit_image<br>
