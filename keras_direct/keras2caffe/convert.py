@@ -72,7 +72,7 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
         if type(layer.input)!=list:
             bottom = layer.input.name
         
-        # first we need to create Input layer
+        #first we need to create Input layer
         if layer_type=='InputLayer' or len(caffe_net.tops)==0:
 
             input_name = 'data'
@@ -345,9 +345,9 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
             caffe_net[name] = L.Pooling(caffe_net[outputs[bottom]], kernel_size=pool_size[0], 
                 stride=strides[0], **kwargs)
         
-        elif layer_type=='Dropout' or 'SpatialDropout2D':
-            # drop_rate = config['rate']
-            drop_ratio = 0.0  # force drop ratio to set 0
+        elif layer_type=='Dropout' or layer_type == 'SpatialDropout2D':
+            # drop_ratio = config['rate']
+            drop_ratio = 0.0
             caffe_net[name] = L.Dropout(caffe_net[outputs[bottom]], 
                 dropout_param=dict(dropout_ratio=drop_ratio))
         
@@ -355,18 +355,34 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
             caffe_net[name] = L.Pooling(caffe_net[outputs[bottom]], pool=P.Pooling.AVE, 
                 pooling_param=dict(global_pooling=True))
         
+        # elif layer_type=='UpSampling2D':
+        #     if config['size'][0]!=config['size'][1]:
+        #         raise Exception('Unsupported upsampling factor')
+        #     factor = config['size'][0]
+        #     kernel_size = 2 * factor - factor % 2
+        #     stride = factor
+        #     pad = int(math.ceil((factor - 1) / 2.0))
+        #     channels = layer.input_shape[-1]
+        #     caffe_net[name] = L.Deconvolution(caffe_net[outputs[bottom]], convolution_param=dict(num_output=channels, 
+        #         group=channels, kernel_size=kernel_size, stride=stride, pad=pad, weight_filler=dict(type='bilinear'), 
+        #         bias_term=False), param=dict(lr_mult=0, decay_mult=0))
+        
         elif layer_type=='UpSampling2D':
-            # interpolation = config['interpolation']
-            interpolation = 'bilinear'  # bilinear possible only
             if config['size'][0]!=config['size'][1]:
                 raise Exception('Unsupported upsampling factor')
-            factor = config['size'][0]
-            kernel_size = 2 * factor - factor % 2
-            stride = factor
-            pad = int(math.ceil((factor - 1) / 2.0))
+            interpolation = config['interpolation']
+            weight_filler = None
+            if interpolation == 'nearest':
+                interpolation = 'constant'
+                weight_filler=dict(type='constant', value=1.0)
+            elif interpolation == 'bilinear':
+                weight_filler=dict(type='bilinear')
+            kernel_size = config['size'][0]
+            stride = 2
+            pad = 0
             channels = layer.input_shape[-1]
             caffe_net[name] = L.Deconvolution(caffe_net[outputs[bottom]], convolution_param=dict(num_output=channels, 
-                group=channels, kernel_size=kernel_size, stride=stride, pad=pad, weight_filler=dict(type=interpolation), 
+                group=channels, kernel_size=kernel_size, stride=stride, pad=pad, weight_filler=weight_filler, 
                 bias_term=False), param=dict(lr_mult=0, decay_mult=0))
         
         elif layer_type=='LeakyReLU':
