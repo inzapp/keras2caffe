@@ -179,11 +179,6 @@ class NetSpec(object):
     def __getattr__(self, name):
         return self.tops[name]
 
-    # def __getattr__(self, name):
-    #     if name.find('resize_ResizeNearestNeighbor') > -1:
-    #         name = name.replace('resize_ResizeNearestNeighbor', 'Const')
-    #     return self.tops[name]
-
     def __setitem__(self, key, value):
         self.__setattr__(key, value)
 
