@@ -8,4 +8,7 @@
 *.h5
 *.caffemodel
 *.prototxt
+*.npy
+*.json
+*.pb
 *.swp
