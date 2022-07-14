@@ -246,6 +246,8 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
                 caffe_net[name_s] = L.Softmax(caffe_net[name], in_place=True)
             elif config['activation'] == 'relu':
                 caffe_net[name_s] = L.ReLU(caffe_net[name], in_place=True)
+            elif config['activation'] == 'sigmoid':
+                caffe_net[name_s] = L.Sigmoid(caffe_net[name], in_place=True)
         elif layer_type == 'Activation':
             if config['activation'] == 'relu':
                 # caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True)
@@ -253,6 +255,8 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
                     caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]])
                 else:
                     caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True)
+            elif config['activation'] == 'sigmoid':
+                caffe_net[name] = L.Sigmoid(caffe_net[outputs[bottom]], in_place=True)
             elif config['activation'] == 'LeakyReLU':
                 # caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True)
                 if len(layer.input.consumers()) > 1:
