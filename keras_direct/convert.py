@@ -286,7 +286,12 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
             layers = []
             for i in layer.input:
                 layers.append(caffe_net[outputs[i.name]])
-            caffe_net[name] = L.Eltwise(*layers)
+            caffe_net[name] = L.Eltwise(*layers, eltwise_param=dict(operation=P.Eltwise.SUM))
+        elif layer_type == 'Multiply':
+            layers = []
+            for i in layer.input:
+                layers.append(caffe_net[outputs[i.name]])
+            caffe_net[name] = L.Eltwise(*layers, eltwise_param=dict(operation=P.Eltwise.PROD))
         elif layer_type == 'Flatten':
             caffe_net[name] = L.Flatten(caffe_net[outputs[bottom]])
         elif layer_type == 'Reshape':
@@ -375,9 +380,9 @@ def convert(keras_model, caffe_net_file, caffe_params_file):
             # blobs[0] = np.array(blobs[0]).transpose(3, 2, 0, 1)
             # net_params[name] = blobs
         elif layer_type == 'ReLU':
-            caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True,negative_slope=0.0)
+            caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True, negative_slope=0.0)
         elif layer_type == 'LeakyReLU':
-            caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True,negative_slope=round(0.1,1))
+            caffe_net[name] = L.ReLU(caffe_net[outputs[bottom]], in_place=True, negative_slope=round(0.1,1))
         elif layer_type == 'ZeroPadding2D':
             padding = config['padding']
             print(padding)
